@@ -50,9 +50,9 @@ function getSelectedText() {
  * @param textToFind
  */
 addToolTip = function(textToFind) {
-  console.log("enter addTooltip for " +textToFind)
+  // console.log("enter addTooltip for " +textToFind)
   let pContains = $("p:contains('" + textToFind + "')");
-  console.log(pContains.html())
+  // console.log(pContains.html())
 
   if(pContains.html()) {
     pContains.html(function(_, html) {
@@ -60,7 +60,7 @@ addToolTip = function(textToFind) {
     });
   } else {
     let divContains = $("div:contains('" + textToFind + "')");
-    console.log(divContains)
+    // console.log(divContains)
     divContains.html(function(_, html) {
       return html.replace(textToFind, '<span class="tooltip">'+ textToFind + '<span class="tooltiptext">Check it bitch</span></span>');
     });
@@ -90,7 +90,7 @@ addToolTip = function(textToFind) {
  * Callback function for double click
  * @param e
  */
-f=function(e){
+doubleClickListener=function(e){
   let wholeParagraphText = window.getSelection().focusNode.wholeText;
   // let selectedSentence = wholeParagraphText.substring(0, wholeParagraphText.indexOf('.'))
   var selectedSentence = getSelectedText()
@@ -100,4 +100,77 @@ f=function(e){
   // console.log(selectedSentence);
   addToolTip(selectedSentence)
 }
-document.body.addEventListener('dblclick',f);
+
+/**
+ * Callback function for mouseup
+ */
+mouseupListener = function(){
+  console.log("mouseup called")
+  var selectedSentence = getSelectedText()
+  // addToolTip(selectedSentence)
+}
+
+
+// document.body.addEventListener('dblclick',doubleClickListener);
+// document.body.addEventListener('mouseup',mouseupListener);
+
+
+//////
+
+$(document).ready(function () {
+  function commentButtonClick() {
+    console.log("tweet button clicked")
+    let selectedText = document.getSelection().toString();
+    window.open(
+      "https://twitter.com/intent/tweet?text=" +
+        selectedText
+    );
+    // console.log("This is your selected text: ",selectedText);
+  }
+
+  function checkForSelectedText() {
+    // console.log("enter mouseup")
+    let textu = document.getSelection().toString();
+    let matchu = /\r|\n/.exec(textu);
+    if (textu.length && !matchu) {
+      // console.log('enter if')
+      let range = document.getSelection().getRangeAt(0);
+      rect = range.getBoundingClientRect();
+      scrollPosition = $(window).scrollTop();
+      containerTop = scrollPosition + rect.top - 50 + "px";
+      containerLeft = rect.left + rect.width / 2 - 50 + "px";
+      textSelectionTooltipContainer.style.transform =
+          "translate3d(" + containerLeft + "," + containerTop + "," + "0px)";
+      bodyElement.appendChild(textSelectionTooltipContainer);
+      $("body").off("mouseup");
+      // unbind to remove all previous event listeners. otherwise opens twitter multiple times
+      $("#commentBtn").unbind().on("click", commentButtonClick);
+      console.log('remove body click listener')
+    }
+  }
+
+  const textSelectionTooltipContainer = document.createElement("div");
+  textSelectionTooltipContainer.setAttribute(
+      "id",
+      "textSelectionTooltipContainer"
+  );
+  textSelectionTooltipContainer.innerHTML = `<button id="commentBtn">Comment</button>`;
+  const bodyElement = document.getElementsByTagName("BODY")[0];
+
+  /**
+   * Removes the tooltip if nothing is selected
+   */
+  bodyElement.addEventListener("mouseup", function (e) {
+    var textu = document.getSelection().toString();
+    if (!textu.length) {
+      textSelectionTooltipContainer.remove();
+      $("#commentBtn").off();
+      $("body").on("mouseup", checkForSelectedText);
+      console.log('add body click listener')
+    }
+  });
+
+  console.log('add body click listener')
+  $("body").on("mouseup", checkForSelectedText);
+
+});
