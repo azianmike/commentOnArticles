@@ -9,21 +9,24 @@
 //   $(this).css("background-color", "pink");
 // });
 
-addHover = function() {
-  $('#onlyCommentsAdd').hover(function () {
-    $(this).css("color", "yellow");
-  }, function () {
-    $(this).css("color", "pink");
-  });
-};
+// addHover = function() {
+//   $('#onlyCommentsAdd').hover(function () {
+//     $(this).css("color", "yellow");
+//   }, function () {
+//     $(this).css("color", "pink");
+//   });
+// };
 
 // $("p:contains('Chrome')").html(function(_, html) {
 //   return html.replace(/(Chrome)/g, '<span class="tooltip">Chrome<span class="tooltiptext">Check it bitch</span></span>');
 // });
 
-addHover();
+// addHover();
 
-
+/**
+ * Gets text that is selected on a web page
+ * @returns {*}
+ */
 function getSelectedText() {
   var selectedText;
   if (window.getSelection) {  // all browsers, except IE before version 9
@@ -42,6 +45,10 @@ function getSelectedText() {
   return selectedText
 }
 
+/**
+ * Adds a Tool tip onto a string on a webpage
+ * @param textToFind
+ */
 addToolTip = function(textToFind) {
   console.log("enter addTooltip for " +textToFind)
   let pContains = $("p:contains('" + textToFind + "')");
@@ -64,21 +71,25 @@ addToolTip = function(textToFind) {
 }
 
 /** Does not work with sentences that DON'T end in a period :( **/
-function getSelectedSentence(wholeParagraphText) {
-  let selectedText = getSelectedText();
-  let indexOfSelectedText = wholeParagraphText.indexOf(selectedText)
-  let firstHalfOfPara = wholeParagraphText.substring(0, indexOfSelectedText)
-  let secondHalfOfPara = wholeParagraphText.substring(indexOfSelectedText)
-  let firstPeriod = firstHalfOfPara.indexOf('.')
-  let secondPeriod = indexOfSelectedText + secondHalfOfPara.indexOf('.')
-  if (firstPeriod == -1) // This means first sentence since no period was found
-  {
-    return wholeParagraphText.substring(0, secondPeriod)
-  } else { // This means sentence in middle of paragraph
-    return wholeParagraphText.substring(firstPeriod + 1, secondPeriod)
-  }
-}
+// function getSelectedSentence(wholeParagraphText) {
+//   let selectedText = getSelectedText();
+//   let indexOfSelectedText = wholeParagraphText.indexOf(selectedText)
+//   let firstHalfOfPara = wholeParagraphText.substring(0, indexOfSelectedText)
+//   let secondHalfOfPara = wholeParagraphText.substring(indexOfSelectedText)
+//   let firstPeriod = firstHalfOfPara.indexOf('.')
+//   let secondPeriod = indexOfSelectedText + secondHalfOfPara.indexOf('.')
+//   if (firstPeriod == -1) // This means first sentence since no period was found
+//   {
+//     return wholeParagraphText.substring(0, secondPeriod)
+//   } else { // This means sentence in middle of paragraph
+//     return wholeParagraphText.substring(firstPeriod + 1, secondPeriod)
+//   }
+// }
 
+/**
+ * Callback function for double click
+ * @param e
+ */
 f=function(e){
   let wholeParagraphText = window.getSelection().focusNode.wholeText;
   // let selectedSentence = wholeParagraphText.substring(0, wholeParagraphText.indexOf('.'))
